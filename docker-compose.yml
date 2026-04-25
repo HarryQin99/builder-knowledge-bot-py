@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: knowledgebot
+      POSTGRES_PASSWORD: knowledgebot
+      POSTGRES_DB: knowledgebot
+    ports:
+      - "5433:5432"   # host 5433 to avoid clash with Java repo's compose
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U knowledgebot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://knowledgebot:knowledgebot@postgres:5432/knowledgebot
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./corpus:/app/corpus:ro
+
+volumes:
+  pg-data:

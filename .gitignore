@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Virtualenvs
+.venv/
+venv/
+
+# Test / lint caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Secrets & local config
+.env
+.env.*
+!.env.example
+
+# Corpus (PDFs not committed)
+corpus/*.pdf
+corpus/*.PDF
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
