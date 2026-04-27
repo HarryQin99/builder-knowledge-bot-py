@@ -14,8 +14,8 @@ import time
 from pathlib import Path
 
 import anthropic
+import pymupdf
 from dotenv import load_dotenv
-from pypdf import PdfReader
 
 CORPUS_PATH = Path("corpus/ncc-2022-vol2.pdf")
 MODEL = "claude-haiku-4-5"
@@ -35,11 +35,15 @@ def load_pdf_text(path: Path) -> tuple[str, int, float]:
             f"See README setup section: copy NCC 2022 Vol 2 PDF into corpus/."
         )
     start = time.perf_counter()
-    reader = PdfReader(str(path))
-    pages = [page.extract_text() or "" for page in reader.pages]
+    doc = pymupdf.open(str(path))
+    try:
+        page_count = len(doc)
+        pages = [page.get_text() for page in doc]
+    finally:
+        doc.close()
     text = "\n".join(pages)
     elapsed = time.perf_counter() - start
-    return text, len(reader.pages), elapsed
+    return text, page_count, elapsed
 
 
 def count_claude_tokens(text: str) -> int:
@@ -66,7 +70,7 @@ def print_results(
         ("Characters", f"{char_count:,}"),
         ("chars / 4 estimate", f"{chars_div_4:,}"),
         (f"Anthropic count_tokens ({MODEL})", f"{anthropic_tokens:,}"),
-        ("Load time (pypdf)", f"{load_seconds:.2f}s"),
+        ("Load time (pymupdf)", f"{load_seconds:.2f}s"),
         ("% of 200K window", f"{anthropic_tokens / WINDOW_TOKENS:.1%}"),
         ("% of 190K ceiling", f"{anthropic_tokens / CEILING_TOKENS:.1%}"),
     ]
