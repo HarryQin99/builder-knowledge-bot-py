@@ -42,8 +42,8 @@ curl localhost:8000/health
 
 | Phase | Status | What |
 |---|---|---|
-| 0 — Scaffolding | in progress | uv, FastAPI, Docker, compose, /health |
-| 1 — Long-context measurement | — | tiktoken-accurate token count, confirms Java's chars/4 estimate, no full implementation (Java already proved infeasibility — see Java repo's [phase-1-findings](https://github.com/Harryqin99/build-knowledge-bot/blob/main/docs/observations/phase-1-findings.md)) |
+| 0 — Scaffolding | done | uv, FastAPI, Docker, compose, /health |
+| 1 — Long-context measurement | [done](docs/observations/phase-1-findings.md) | NCC corpus measures 190K tokens via Anthropic `count_tokens` — 95% of Claude's 200K window, zero headroom; RAG required |
 | 2 — Basic RAG | — | LlamaIndex ingestion + query, pgvector, FastAPI `/ask` |
 | 3 — Honesty layer | — | Pydantic-typed structured refusal envelope, scope check |
 | 4 — Eval harness | — | golden Q&A set, retrieval@K, faithfulness scoring |
